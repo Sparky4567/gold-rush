@@ -3,7 +3,7 @@ export type Ore = {
   x: number;
   y: number;
   size: number;
-  kind: 'gold' | 'rock' | 'gem' | 'obsidian';
+  kind: 'gold' | 'rock' | 'gem' | 'obsidian' | 'emerald';
   value: number;
 };
 
@@ -17,7 +17,12 @@ export function swing(angle: number, direction: number, dt: number) {
   return { angle: next, direction };
 }
 
-export function ores(round: number): Ore[] {
+const targets = [650, 1500, 2700, 4200, 6000];
+export function levelTarget(round: number): number {
+  return targets[round - 1] ?? round * 1500;
+}
+
+export function ores(round: number, currentHaul = 0): Ore[] {
   const items: Ore[] = Array.from({ length: 16 }, (_, id) => {
     const kind = id % 7 === 6 ? 'gem' : id % 4 === 3 ? 'rock' : 'gold';
     return {
@@ -31,6 +36,13 @@ export function ores(round: number): Ore[] {
   // A distinct bonus, placed in the open lower-right area rather than replacing gold.
   if (round % 3 === 0) {
     items.push({ id: 16, kind: 'obsidian', x: 790, y: 475, size: 29, value: 1000 });
+  }
+  const availableValue = currentHaul + items.reduce((total, item) => total + item.value, 0);
+  // On shared milestones, obsidian takes priority unless the target is
+  // impossible even after collecting every existing stone. Include haul after
+  // shop purchases because targets and earnings carry over between rounds.
+  if (round % 5 === 0 && (round % 3 !== 0 || availableValue < levelTarget(round))) {
+    items.push({ id: 17, kind: 'emerald', x: 675, y: 475, size: 25, value: 2500 });
   }
   return items;
 }

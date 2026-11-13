@@ -4,8 +4,8 @@ A browser arcade game inspired by classic gold-mining games. Aim a swinging claw
 
 ## Features
 
-- Swinging claw with collision detection and weight-dependent reeling speeds
-- Gold nuggets, diamonds, rocks, rare obsidian, and dynamite
+- Swinging claw with a ±78° arc, collision detection, and weight-dependent reeling speeds
+- Gold nuggets, diamonds, rocks, rare obsidian, emeralds, and dynamite
 - 60-second rounds with increasing targets
 - A shop between rounds for reel upgrades and extra dynamite
 - Mouse, touch, and keyboard controls
@@ -40,15 +40,18 @@ The claw swings automatically and reels in the first item it touches. Large gold
 | Diamond | $400 |
 | Rock | $20 |
 | Obsidian | $1,000 |
+| Emerald | $2,500 |
 
 One extra obsidian stone appears in the lower-right area every third level (3, 6, 9, and so on). It is worth $1,000 and takes longer to reel in than ordinary gold.
+
+Emeralds appear every fifth level (5, 10, 15, …), except on obsidian levels (15, 30, …). On those shared milestones, an emerald only appears if your current haul after shopping plus the total value of all other stones is below the target. This checks available money, not whether every stone can be collected within the time limit.
 
 Reach the target before the 60-second timer expires to advance. Shop purchases deduct from your accumulated haul. The first five targets are $650, $1,500, $2,700, $4,200, and $6,000. From level 6 onward, the target is the level number multiplied by $1,500; there is no fixed final level.
 
 ## Development
 
 ```sh
-bun test           # Check spawning, item reach, and swing reversals
+bun test           # Check rare-stone rules, item reach, and swing reversals
 bun run typecheck  # Check TypeScript
 bun run build      # Build browser assets into dist/
 bun run start      # Run the Bun server in production mode
@@ -58,7 +61,10 @@ The production server serves the source HTML through Bun's bundler. The separate
 
 Main files:
 
-- `src/App.tsx` — game state, animation loop, controls, and SVG artwork
+- `src/App.tsx` — game state, animation loop, controls, and ore artwork
+- `src/Miner.tsx` — illustrated miner character
+- `src/mine.ts` — level targets, stone generation, and swing calculations
+- `src/mine.test.ts` — regression tests for stone scheduling, value checks, reach, and swing reversals
 - `src/index.css` — layout and visual styles
 - `src/index.ts` — Bun server
 - `src/index.html` — HTML entry point and page metadata
@@ -68,4 +74,3 @@ Gameplay runs in the browser with no backend persistence. Personal bests use loc
 ## License
 
 [MIT](LICENSE) — Copyright (c) 2026 Sparky4567.
-# gold-rush
