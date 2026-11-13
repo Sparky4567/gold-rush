@@ -44,14 +44,14 @@ The claw swings automatically and reels in the first item it touches. Large gold
 
 One extra obsidian stone appears in the lower-right area every third level (3, 6, 9, and so on). It is worth $1,000 and takes longer to reel in than ordinary gold.
 
-Emeralds appear every fifth level (5, 10, 15, …), except on obsidian levels (15, 30, …). On those shared milestones, an emerald only appears if your current haul after shopping plus the total value of all other stones is below the target. This checks available money, not whether every stone can be collected within the time limit.
+Emeralds appear every fifth level (5, 10, 15, …), except on obsidian levels (15, 30, …). On those shared milestones, an emerald only appears if your current haul after shopping plus the total value of all other stones is below the target. Emeralds have a green faceted shape and an “EMERALD · $2,500” label beneath them. A discovery notice appears while the emerald remains in the mine. The overlap exception checks available money, not whether every stone can be collected within the time limit.
 
 Reach the target before the 60-second timer expires to advance. Shop purchases deduct from your accumulated haul. The first five targets are $650, $1,500, $2,700, $4,200, and $6,000. From level 6 onward, the target is the level number multiplied by $1,500; there is no fixed final level.
 
 ## Development
 
 ```sh
-bun test           # Check rare-stone rules, item reach, and swing reversals
+bun test           # Check spawning, rendering, reach, and swing reversals
 bun run typecheck  # Check TypeScript
 bun run build      # Build browser assets into dist/
 bun run start      # Run the Bun server in production mode
@@ -61,8 +61,10 @@ The production server serves the source HTML through Bun's bundler. The separate
 
 Main files:
 
-- `src/App.tsx` — game state, animation loop, controls, and ore artwork
+- `src/App.tsx` — game state, animation loop, and controls
 - `src/Miner.tsx` — illustrated miner character
+- `src/OreShape.tsx` — SVG artwork for stones and gems
+- `src/OreShape.test.tsx` — regression test for level-five emerald rendering
 - `src/mine.ts` — level targets, stone generation, and swing calculations
 - `src/mine.test.ts` — regression tests for stone scheduling, value checks, reach, and swing reversals
 - `src/index.css` — layout and visual styles
@@ -70,6 +72,10 @@ Main files:
 - `src/index.html` — HTML entry point and page metadata
 
 Gameplay runs in the browser with no backend persistence. Personal bests use local storage. Optional Google Fonts fall back to system fonts when unavailable.
+
+## Troubleshooting
+
+If new stones or other recent changes do not appear during development, restart `bun run dev`, refresh the browser, and begin a new run. Hot reload can preserve an existing round’s generated stones. Emeralds first appear on level 5; levels 1–4 do not contain them.
 
 ## License
 
